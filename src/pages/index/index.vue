@@ -2,12 +2,33 @@
 <route lang="json5" type="home">
 {
   style: {
-    navigationBarTitleText: '首页',
+    navigationBarTitleText: 'Plan',
+    navigationStyle: 'custom',
   },
 }
 </route>
 <template>
-  <view>Index</view>
+  <view v-if="statusBarHeight > 0">
+    <view
+      class="text-bold text-[20px] flex justify-center"
+      :style="{ marginTop: `${statusBarHeight + 6}px` }"
+    >
+      {{ curYear }} 年计划
+    </view>
+    <Plans name="wkx" />
+    <Plans name="wk" />
+  </view>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import Plans from '@/components/Plan/index.vue'
+import { usePlanStore } from '@/store'
+
+const { curYear } = usePlanStore()
+const statusBarHeight = ref(0)
+
+onMounted(() => {
+  const systemInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = systemInfo.statusBarHeight
+})
+</script>
