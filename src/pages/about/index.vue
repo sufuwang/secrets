@@ -49,5 +49,12 @@ const getUsedTime = (date: string) => {
   const diff = dayjs().diff(dayjs(date), 'day')
   return `${Math.floor(diff / 365)} 年 ${diff % 365} 天`
 }
+
+onShareAppMessage((res) => {
+  return {
+    title: 'Secretsss',
+    path: '/pages/about/index',
+  }
+})
 </script>
 <style lang="scss" scoped></style>

@@ -31,4 +31,10 @@ onMounted(() => {
   const systemInfo = uni.getSystemInfoSync()
   statusBarHeight.value = systemInfo.statusBarHeight
 })
+onShareAppMessage((res) => {
+  return {
+    title: 'Secretsss',
+    path: '/pages/index/index',
+  }
+})
 </script>

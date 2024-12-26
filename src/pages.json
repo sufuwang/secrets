@@ -4,7 +4,11 @@
     "navigationBarTitleText": "Secretsss",
     "navigationBarBackgroundColor": "#f8f8f8",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#FFFFFF"
+    "backgroundColor": "#FFFFFF",
+    "onShareAppMessage": {
+      "title": "Secretsss",
+      "path": "/pages/index/index"
+    }
   },
   "easycom": {
     "autoscan": true,
