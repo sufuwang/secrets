@@ -2,39 +2,51 @@
 <route lang="json5" type="home">
 {
   style: {
-    navigationBarTitleText: 'Plan',
     navigationStyle: 'custom',
   },
 }
 </route>
 <template>
-  <view v-if="statusBarHeight > 0">
-    <view
-      class="text-bold text-[20px] flex justify-center"
-      :style="{ marginTop: `${statusBarHeight + 6}px` }"
-    >
-      {{ curYear }} 年计划
+  <Layout>
+    <view class="flex flex-col justify-between pt-4">
+      <Card><TaskDesc type="create" /></Card>
+      <Card><TaskDesc type="done" /></Card>
+      <Card v-for="item in 10" :key="item">
+        一般的，检举内容由承办的党的委员会或纪律检查委员会将处理意见或复议、复查结论同申诉人见面，听取其意见。复议、复查的结论和决定，应交给申诉人一份。
+      </Card>
     </view>
-    <Plans name="wkx" />
-    <Plans name="wk" />
-  </view>
+    <MenuButton :zIndex="zIndex" />
+  </Layout>
 </template>
 
 <script lang="ts" setup>
-import Plans from '@/components/Plan/index.vue'
-import { usePlanStore } from '@/store'
+import Layout from '@/components/Layout.vue'
+import Card from './components/Card.vue'
+import TaskDesc from './components/TaskDesc.vue'
+import MenuButton from './components/MenuButton.vue'
+import { useUserStore } from '@/store'
 
-const { curYear } = usePlanStore()
-const statusBarHeight = ref(0)
+const { login } = useUserStore()
 
-onMounted(() => {
-  const systemInfo = uni.getSystemInfoSync()
-  statusBarHeight.value = systemInfo.statusBarHeight
+const zIndex = ref(100)
+const id = ref()
+
+onPageScroll(() => {
+  clearTimeout(id.value)
+  zIndex.value = -1
+  id.value = setTimeout(() => {
+    zIndex.value = 100
+    clearTimeout(id.value)
+  }, 200)
 })
 onShareAppMessage((res) => {
   return {
     title: 'Secretsss',
     path: '/pages/index/index',
   }
+})
+
+onMounted(() => {
+  login()
 })
 </script>

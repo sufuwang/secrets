@@ -59,27 +59,27 @@ const initState: IPlan = {
               doneDate: '',
             },
             {
-              text: '《夹缝生存：不堪重负的中产家庭》（年底前完成）',
+              text: '《夹缝生存：不堪重负的中产家庭》',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '《小王子》（年底前完成）',
+              text: '《小王子》',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '《人类群星闪耀时》（年底前完成）',
+              text: '《人类群星闪耀时》',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '《一生之敌》（年底前完成）',
+              text: '《一生之敌》',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '《长安的荔枝》（年底前完成）',
+              text: '《长安的荔枝》',
               deadline: '2025-12-31',
               doneDate: '',
             },
@@ -94,7 +94,7 @@ const initState: IPlan = {
           title: '学习英语',
           list: [
             {
-              text: '补充单词量：《10 天背完 3000 单词》（ 3 月 15 日前完成）',
+              text: '补充单词量：《10 天背完 3000 单词》',
               deadline: '2025-03-15',
               doneDate: '',
             },
@@ -126,12 +126,12 @@ const initState: IPlan = {
           title: '英语学习',
           list: [
             {
-              text: '背单词，会读会写（3月1日前完成）',
+              text: '背单词，会读会写',
               deadline: '2025-03-01',
               doneDate: '',
             },
             {
-              text: '口语课程（全年）',
+              text: '口语课程',
               deadline: '2025-12-31',
               doneDate: '',
             },
@@ -141,42 +141,42 @@ const initState: IPlan = {
           title: '学习电脑操作',
           list: [
             {
-              text: '学习使用 WPS，会制作简单的 Word、Excel、PPT（上半年完成）',
+              text: '学习使用 WPS，会制作简单的 Word、Excel、PPT',
               deadline: '2025-06-30',
               doneDate: '',
             },
             {
-              text: '学习使用在线文档（上半年完成）',
+              text: '学习使用在线文档',
               deadline: '2025-06-30',
               doneDate: '',
             },
             {
-              text: '学习使用 VPN 登陆 Youtube（上半年完成）',
+              text: '学习使用 VPN 登陆 Youtube',
               deadline: '2025-06-30',
               doneDate: '',
             },
             {
-              text: '学习 VPN 的逻辑（上半年完成）',
+              text: '学习 VPN 的逻辑',
               deadline: '2025-06-30',
               doneDate: '',
             },
             {
-              text: '学习使用 ChatGPT（上半年完成）',
+              text: '学习使用 ChatGPT',
               deadline: '2025-06-30',
               doneDate: '',
             },
             {
-              text: '学习简单的 Shell 命令（上半年完成）',
+              text: '学习简单的 Shell 命令',
               deadline: '2025-06-30',
               doneDate: '',
             },
             {
-              text: '学习 Python，完成环境搭建，学习基本语法（下半年完成）',
+              text: '学习 Python，完成环境搭建，学习基本语法',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '学习使用 Python 制作 Excel（下半年完成）',
+              text: '学习使用 Python 制作 Excel',
               deadline: '2025-12-31',
               doneDate: '',
             },
@@ -186,22 +186,22 @@ const initState: IPlan = {
           title: '读书',
           list: [
             {
-              text: '《你当像鸟飞往你的山》（全年）',
+              text: '《你当像鸟飞往你的山》',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '《房思琪的初恋乐园》（全年）',
+              text: '《房思琪的初恋乐园》',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '《活着》（全年）',
+              text: '《活着》',
               deadline: '2025-12-31',
               doneDate: '',
             },
             {
-              text: '《呼喊与细雨》（全年）',
+              text: '《呼喊与细雨》',
               deadline: '2025-12-31',
               doneDate: '',
             },
