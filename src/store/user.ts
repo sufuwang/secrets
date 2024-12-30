@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-const appid = 'wx20deb0404aa253b8'
-const secret = '8309d1ad3f70408d785bc4a03186def6'
-
 const initState = {
   nickname: '',
   avatar: '',
@@ -20,7 +17,7 @@ export const useUserStore = defineStore(
         provider: 'weixin',
         success: async ({ code }) => {
           uni.request({
-            url: `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${code}&grant_type=authorization_code`,
+            url: `https://api.weixin.qq.com/sns/jscode2session?appid=${__WX_APPID__}&secret=${__WX_SECRET__}&js_code=${code}&grant_type=authorization_code`,
             header: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
