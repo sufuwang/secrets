@@ -47,6 +47,7 @@ export default ({ command, mode }) => {
     VITE_APP_PROXY,
     VITE_APP_PROXY_PREFIX,
     VITE_WX_APPID,
+    VITE_BASEURL,
   } = env
   console.log('环境变量 env -> ', env)
 
@@ -114,6 +115,7 @@ export default ({ command, mode }) => {
       __VITE_APP_PROXY__: JSON.stringify(VITE_APP_PROXY),
       __WX_APPID__: JSON.stringify(VITE_WX_APPID),
       __WX_SECRET__: JSON.stringify(S_WX_SECRET),
+      __BASEURL__: JSON.stringify(VITE_BASEURL),
     },
     css: {
       postcss: {

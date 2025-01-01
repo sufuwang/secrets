@@ -15,12 +15,7 @@ type IUniUploadFileOptions = {
   formData?: any
 }
 
-type Alias = {
-  wk: '王凯'
-  wkx: '王可馨'
-}
 type IUserInfo = {
-  alias: Alias
   nickname?: string
   avatar?: string
   /** 微信的 openid，非微信没有这个字段 */
@@ -40,7 +35,8 @@ type Task = Array<{
 type IPlan = {
   task: {
     [key: number]: {
-      [key in keyof Alias]: Task
+      wx: Task
+      wkx: Task
     }
   }
 }

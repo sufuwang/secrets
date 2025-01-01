@@ -36,9 +36,7 @@ const onClick = async () => {
       })
     }
   } else {
-    login(() => {
-      uni.navigateTo({ url: '/pages/index/index' })
-    })
+    login()
   }
 }
 </script>

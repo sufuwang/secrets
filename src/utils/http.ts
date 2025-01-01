@@ -5,6 +5,7 @@ export const http = <T>(options: CustomRequestOptions) => {
   return new Promise<IResData<T>>((resolve, reject) => {
     uni.request({
       ...options,
+      url: options.url.startsWith('http') ? options.url : `${__BASEURL__}/secrets${options.url}`,
       dataType: 'json',
       // #ifndef MP-WEIXIN
       responseType: 'json',
