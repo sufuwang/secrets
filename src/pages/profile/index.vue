@@ -44,7 +44,9 @@
 </template>
 <script setup lang="ts">
 import Layout from '@/components/Layout.vue'
-import { http } from '@/utils/http'
+import { useUserStore } from '@/store'
+
+const { setProfile } = useUserStore()
 
 const model = reactive({
   avatar:
@@ -66,9 +68,7 @@ const onChooseAvatar = ({ detail }) => {
 }
 
 const onSubmit = async () => {
-  const openid = await uni.getStorageSync('openid')
-  await http.post('/profile', { openid, nickname: model.nickname, avatar: model.avatar })
-  uni.setStorageSync('profile', JSON.stringify({ nickname: model.nickname, avatar: model.avatar }))
+  await setProfile({ nickname: model.nickname, avatar: model.avatar })
   const { options } = getCurrentPages().at(-1) as any
   uni.redirectTo({
     url: options?.to ?? '/pages/index/index',

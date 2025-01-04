@@ -8,45 +8,51 @@
 </route>
 <template>
   <Layout>
-    <view class="flex flex-col justify-between pt-4">
+    <view class="flex flex-col justify-between pt-2 px-2">
       <Card><TaskDesc type="create" /></Card>
       <Card><TaskDesc type="done" /></Card>
       <Card v-for="item in 10" :key="item">
         一般的，检举内容由承办的党的委员会或纪律检查委员会将处理意见或复议、复查结论同申诉人见面，听取其意见。复议、复查的结论和决定，应交给申诉人一份。
       </Card>
     </view>
-    <MenuButton :zIndex="zIndex" />
+    <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @onClick="onClick" />
   </Layout>
 </template>
 
 <script lang="ts" setup>
 import Layout from '@/components/Layout.vue'
+import FabButton from '@/components/FabButton.vue'
 import Card from './components/Card.vue'
 import TaskDesc from './components/TaskDesc.vue'
-import MenuButton from './components/MenuButton.vue'
 import { useUserStore } from '@/store'
 
-const { login } = useUserStore()
+const { login, getProfile } = useUserStore()
 
-const zIndex = ref(100)
-const id = ref()
-
-onPageScroll(() => {
-  clearTimeout(id.value)
-  zIndex.value = -1
-  id.value = setTimeout(() => {
-    zIndex.value = 100
-    clearTimeout(id.value)
-  }, 200)
-})
 onShareAppMessage((res) => {
   return {
     title: 'Secretsss',
     path: '/pages/index/index',
   }
 })
-
 onMounted(() => {
   login()
 })
+
+const onClick = async () => {
+  const openid = await uni.getStorageSync('openid')
+  if (openid) {
+    const profile = await getProfile()
+    if (profile && profile.nickname && profile.avatar) {
+      uni.navigateTo({
+        url: '/pages/task/index',
+      })
+    } else {
+      uni.navigateTo({
+        url: '/pages/profile/index?to=/pages/task/index',
+      })
+    }
+  } else {
+    login()
+  }
+}
 </script>

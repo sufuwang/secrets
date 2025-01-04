@@ -7,24 +7,26 @@
 </route>
 <template>
   <Layout :show-navigate-back="true" title="我的任务">
-    <view class="wraper pt-2">
-      <wd-index-bar sticky>
-        <view v-for="item in data" :key="item.index">
-          <wd-index-anchor :index="item.title" />
-          <template v-for="(row, key) in item.list" :key="key">
-            <wd-cell :border="true" clickable :title="row.text">
-              <wd-tag type="primary" mark>
-                <span class="whitespace-nowrap">{{ row.deadline.replace(`${curYear}-`, '') }}</span>
-              </wd-tag>
-            </wd-cell>
-          </template>
-        </view>
-      </wd-index-bar>
-    </view>
+    <wd-index-bar sticky>
+      <view v-for="item in data" :key="item.index">
+        <wd-index-anchor :index="item.title" />
+        <template v-for="(row, key) in item.list" :key="key">
+          <wd-cell :border="true" clickable :title="row.text">
+            <wd-tag type="primary" mark>
+              <span class="whitespace-nowrap">
+                {{ row.deadline.replace(`${curYear}-`, '') }}
+              </span>
+            </wd-tag>
+          </wd-cell>
+        </template>
+      </view>
+    </wd-index-bar>
+    <!-- <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @onClick="onClick" /> -->
   </Layout>
 </template>
 <script setup lang="ts">
 import Layout from '@/components/Layout.vue'
+import FabButton from '@/components/FabButton.vue'
 import { usePlanStore } from '@/store'
 
 const { getCurPlan, curYear } = usePlanStore()
@@ -34,6 +36,8 @@ onBeforeMount(async () => {
   const openid = await uni.getStorageSync('openid')
   data.value = getCurPlan(openid.startsWith('onqMQ48n1309m') ? 'wk' : 'wkx') as Task
 })
+
+const onClick = () => {}
 </script>
 <style lang="scss" scoped>
 :deep(.wd-index-bar__sidebar) {

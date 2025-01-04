@@ -15,9 +15,9 @@
       </view>
     </view>
     <view
-      :class="`bg-[#f1f2f3] px-2 pb-2 grow full ${props.childClass}`"
+      :class="`bg-[#f1f2f3] pb-2 grow full ${props.childClass}`"
       :style="{
-        paddingTop: `${topHeight}px`,
+        marginTop: `${10 + topHeight}px`,
       }"
     >
       <slot />

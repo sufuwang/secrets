@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 import { http } from '@/utils/http'
 
 const initState = {
@@ -17,7 +16,7 @@ export const useUserStore = defineStore(
       return uni.login({
         provider: 'weixin',
         success: async ({ code }) => {
-          const data = (await http.post('/login', { code })) as unknown as { openid: string }
+          const { data } = await http.post<LoginRes>('/login', { code })
           uni.setStorageSync('openid', data.openid)
           userInfo.openid = data.openid
           getProfile()
@@ -27,27 +26,29 @@ export const useUserStore = defineStore(
         },
       })
     }
-    const getProfile = async () => {
-      const data = (await http.get('/profile', { openid: userInfo.openid })) as any
+    const getProfile = async (): Promise<IUserInfo> => {
+      const { data } = await http.get<Profile>('/profile', { openid: userInfo.openid })
+      if (data === null) {
+        return Promise.resolve(null)
+      }
       userInfo.avatar = data.avatar
       userInfo.nickname = data.nickname
-      uni.setStorageSync(
-        'profile',
-        JSON.stringify({ nickname: data.nickname, avatar: data.avatar }),
-      )
+      return userInfo
     }
-    const setProfile = async () => {
-      const data = (await http.post('/profile', {
+    const setProfile = async (info: Profile) => {
+      const { data } = await http.post<Profile>('/profile', {
         openid: userInfo.openid,
-        nickname: userInfo.nickname,
-        avatar: userInfo.avatar,
-      })) as any
+        nickname: info.nickname,
+        avatar: info.avatar,
+      })
       userInfo.avatar = data.avatar
       userInfo.nickname = data.nickname
     }
 
     return {
       login,
+      getProfile,
+      setProfile,
       isLogined() {
         return false
       },

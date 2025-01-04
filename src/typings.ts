@@ -45,3 +45,12 @@ enum TestEnum {
   A = 'a',
   B = 'b',
 }
+
+interface LoginRes {
+  openid: string
+  session_key: string
+}
+interface Profile {
+  avatar: string
+  nickname: string
+}
