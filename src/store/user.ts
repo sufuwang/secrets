@@ -12,7 +12,12 @@ export const useUserStore = defineStore(
   () => {
     const userInfo = reactive<IUserInfo>({ ...initState })
 
-    const login = () => {
+    const login = async () => {
+      const openid = await uni.getStorageSync('openid')
+      if (openid) {
+        userInfo.openid = openid
+        return
+      }
       return uni.login({
         provider: 'weixin',
         success: async ({ code }) => {

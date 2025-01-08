@@ -8,14 +8,12 @@
 <template>
   <Layout :show-navigate-back="true" title="我的任务">
     <wd-index-bar sticky>
-      <view v-for="item in data" :key="item.index">
-        <wd-index-anchor :index="item.title" />
+      <view v-for="item in task" :key="item.catalog">
+        <wd-index-anchor :index="item.catalog" />
         <template v-for="(row, key) in item.list" :key="key">
-          <wd-cell :border="true" clickable :title="row.text">
+          <wd-cell :border="true" clickable :title="row.title">
             <wd-tag type="primary" mark>
-              <span class="whitespace-nowrap">
-                {{ row.deadline.replace(`${curYear}-`, '') }}
-              </span>
+              <span class="whitespace-nowrap">{{ handleDeadline(row.deadline) }}</span>
             </wd-tag>
           </wd-cell>
         </template>
@@ -29,14 +27,22 @@ import Layout from '@/components/Layout.vue'
 import FabButton from '@/components/FabButton.vue'
 import { useTaskStore } from '@/store'
 
-const { getCurPlan, curYear } = useTaskStore()
-const data = ref([])
+const { getTask } = useTaskStore()
+const task = ref<Plan[]>([])
 
 onBeforeMount(async () => {
-  const openid = await uni.getStorageSync('openid')
-  data.value = getCurPlan(openid.startsWith('onqMQ48n1309m') ? 'wk' : 'wkx') as Task
+  task.value = await getTask()
 })
 
+const handleDeadline = (deadline) => {
+  return deadline
+    .split(' ')
+    .at(0)
+    .split('-')
+    .slice(1)
+    .map((row) => parseInt(row))
+    .join('-')
+}
 const onClick = () => {
   uni.navigateTo({
     url: '/pages/task/edit',

@@ -116,27 +116,12 @@ onBeforeMount(() => {
   const { options } = getCurrentPages().at(-1) as any
   pageTitle.value = options.taskId ? '编辑任务' : '新增任务'
 })
-onMounted(() => {
-  console.info('formRef: ', formRef.value)
-})
 
 const onSubmit = async () => {
   try {
     model.loading = true
     await formRef.value.validate()
-    console.info('model: ', model)
     await editTask({
-      // visible: 'public',
-      // catalog: 'catalog',
-      // title: 'title',
-      // taskDesc: 'taskDesc',
-      // deadline: 'deadline',
-      // registerDate: 'registerDate',
-      // lastUpdateDate: 'lastUpdateDate',
-      // done: false,
-      // doneDate: 'doneDate',
-      // doneDesc: 'doneDesc',
-      // doneAttachMent: 'doneAttachMent',
       ...model,
       deadline: dayjs(model.deadline).format('YYYY-MM-DD 23:59:59'),
     })

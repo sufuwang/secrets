@@ -27,7 +27,6 @@ const zIndex = ref(100)
 const id = ref()
 
 emits('onPageScroll', () => {
-  console.info('-------')
   clearTimeout(id.value)
   zIndex.value = -1
   id.value = setTimeout(() => {
