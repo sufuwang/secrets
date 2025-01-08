@@ -7,18 +7,21 @@
 </route>
 <template>
   <Layout :show-navigate-back="true" title="我的任务">
-    <wd-index-bar sticky>
-      <view v-for="item in task" :key="item.catalog">
-        <wd-index-anchor :index="item.catalog" />
-        <template v-for="(row, key) in item.list" :key="key">
-          <wd-cell :border="true" clickable :title="row.title">
-            <wd-tag type="primary" mark>
-              <span class="whitespace-nowrap">{{ handleDeadline(row.deadline) }}</span>
-            </wd-tag>
-          </wd-cell>
-        </template>
-      </view>
-    </wd-index-bar>
+    <template v-if="store.task.length">
+      <wd-index-bar sticky>
+        <view v-for="item in store.task" :key="item.catalog">
+          <wd-index-anchor :index="item.catalog" />
+          <template v-for="(row, key) in item.list" :key="key">
+            <wd-cell :border="true" clickable :title="row.title">
+              <wd-tag type="primary" mark>
+                <span class="whitespace-nowrap">{{ handleDeadline(row.deadline) }}</span>
+              </wd-tag>
+            </wd-cell>
+          </template>
+        </view>
+      </wd-index-bar>
+    </template>
+    <wd-status-tip v-else image="content" tip="暂无内容" />
     <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @onClick="onClick" />
   </Layout>
 </template>
@@ -26,12 +29,12 @@
 import Layout from '@/components/Layout.vue'
 import FabButton from '@/components/FabButton.vue'
 import { useTaskStore } from '@/store'
+import { onPageShow } from '@dcloudio/uni-app'
 
-const { getTask } = useTaskStore()
-const task = ref<Plan[]>([])
+const { store, getTask } = useTaskStore()
 
-onBeforeMount(async () => {
-  task.value = await getTask()
+onPageShow(() => {
+  getTask()
 })
 
 const handleDeadline = (deadline) => {

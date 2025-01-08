@@ -30,6 +30,7 @@ export const useTaskStore = defineStore(
     }
 
     return {
+      store,
       curYear,
       getCurPlan,
       editTask,

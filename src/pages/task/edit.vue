@@ -129,9 +129,7 @@ const onSubmit = async () => {
       icon: 'none',
       title: '任务已保存',
     })
-    uni.redirectTo({
-      url: '/pages/task/index',
-    })
+    uni.navigateBack()
   } finally {
     model.loading = false
   }
