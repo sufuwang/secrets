@@ -21,15 +21,15 @@
         </template>
       </view>
     </wd-index-bar>
-    <!-- <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @onClick="onClick" /> -->
+    <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @onClick="onClick" />
   </Layout>
 </template>
 <script setup lang="ts">
 import Layout from '@/components/Layout.vue'
 import FabButton from '@/components/FabButton.vue'
-import { usePlanStore } from '@/store'
+import { useTaskStore } from '@/store'
 
-const { getCurPlan, curYear } = usePlanStore()
+const { getCurPlan, curYear } = useTaskStore()
 const data = ref([])
 
 onBeforeMount(async () => {
@@ -37,7 +37,11 @@ onBeforeMount(async () => {
   data.value = getCurPlan(openid.startsWith('onqMQ48n1309m') ? 'wk' : 'wkx') as Task
 })
 
-const onClick = () => {}
+const onClick = () => {
+  uni.navigateTo({
+    url: '/pages/task/edit',
+  })
+}
 </script>
 <style lang="scss" scoped>
 :deep(.wd-index-bar__sidebar) {

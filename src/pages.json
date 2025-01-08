@@ -29,6 +29,13 @@
       }
     },
     {
+      "path": "pages/task/edit",
+      "type": "page",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/task/index",
       "type": "page",
       "style": {

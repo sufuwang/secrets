@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { http } from '@/utils/http'
 
 const initState: IPlan = {
   task: {
@@ -227,21 +228,26 @@ const initState: IPlan = {
   },
 }
 
-export const usePlanStore = defineStore(
+export const useTaskStore = defineStore(
   'plan',
   () => {
     const plan = ref<IPlan>({ ...initState })
     const curYear = Math.max(new Date().getFullYear(), 2025)
 
-    const getCurPlan = (key?: keyof Alias) => {
+    const getCurPlan = (key) => {
       const data = plan.value.task[curYear]
       return key ? data[key] : data
+    }
+
+    const editTask = async (body) => {
+      http.post('/task', { openid: uni.getStorageSync('openid'), ...body })
     }
 
     return {
       curYear,
       plan,
       getCurPlan,
+      editTask,
     }
   },
   {
