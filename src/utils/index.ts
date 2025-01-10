@@ -1,4 +1,4 @@
-import { pages, subPackages, tabBar } from '@/pages.json'
+import { pages, subPackages } from '@/pages.json'
 import { isMp } from './platform'
 
 const getLastPage = () => {
@@ -7,20 +7,6 @@ const getLastPage = () => {
   // 上面那个在低版本安卓中打包回报错，所以改用下面这个【虽然我加了src/interceptions/prototype.ts，但依然报错】
   const pages = getCurrentPages()
   return pages[pages.length - 1]
-}
-
-/** 判断当前页面是否是tabbar页  */
-export const getIsTabbar = () => {
-  if (!tabBar) {
-    return false
-  }
-  if (!tabBar.list.length) {
-    // 通常有tabBar的话，list不能有空，且至少有2个元素，这里其实不用处理
-    return false
-  }
-  const lastPage = getLastPage()
-  const currPath = lastPage.route
-  return !!tabBar.list.find((e) => e.pagePath === currPath)
 }
 
 /**

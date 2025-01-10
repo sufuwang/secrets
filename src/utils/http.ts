@@ -5,6 +5,7 @@ export const http = <T>(options: CustomRequestOptions) => {
   return new Promise<IResData<T>>((resolve, reject) => {
     uni.request({
       ...options,
+      url: options.url.startsWith('http') ? options.url : `${__BASEURL__}/secrets${options.url}`,
       dataType: 'json',
       // #ifndef MP-WEIXIN
       responseType: 'json',
@@ -76,5 +77,33 @@ export const httpPost = <T>(
   })
 }
 
+export const httpPut = <T>(
+  url: string,
+  data?: Record<string, any>,
+  query?: Record<string, any>,
+) => {
+  return http<T>({
+    url,
+    query,
+    data,
+    method: 'PUT',
+  })
+}
+
+export const httpDelete = <T>(
+  url: string,
+  data?: Record<string, any>,
+  query?: Record<string, any>,
+) => {
+  return http<T>({
+    url,
+    query,
+    data,
+    method: 'DELETE',
+  })
+}
+
 http.get = httpGet
 http.post = httpPost
+http.put = httpPut
+http.delete = httpDelete

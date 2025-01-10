@@ -33,7 +33,10 @@ export default ({ command, mode }) => {
   // dev 和 build 命令可以分别使用 .env.development 和 .env.production 的环境变量
 
   const { UNI_PLATFORM } = process.env
-  console.log('UNI_PLATFORM -> ', UNI_PLATFORM) // 得到 mp-weixin, h5, app 等
+
+  const secret = loadEnv(mode, path.resolve(process.cwd(), 'env'), 'S_')
+  const { S_WX_SECRET } = secret
+  console.log('环境变量(密钥) env -> ', secret)
 
   const env = loadEnv(mode, path.resolve(process.cwd(), 'env'))
   const {
@@ -43,6 +46,8 @@ export default ({ command, mode }) => {
     VITE_SHOW_SOURCEMAP,
     VITE_APP_PROXY,
     VITE_APP_PROXY_PREFIX,
+    VITE_WX_APPID,
+    VITE_BASEURL,
   } = env
   console.log('环境变量 env -> ', env)
 
@@ -108,6 +113,9 @@ export default ({ command, mode }) => {
     define: {
       __UNI_PLATFORM__: JSON.stringify(UNI_PLATFORM),
       __VITE_APP_PROXY__: JSON.stringify(VITE_APP_PROXY),
+      __WX_APPID__: JSON.stringify(VITE_WX_APPID),
+      __WX_SECRET__: JSON.stringify(S_WX_SECRET),
+      __BASEURL__: JSON.stringify(VITE_BASEURL),
     },
     css: {
       postcss: {

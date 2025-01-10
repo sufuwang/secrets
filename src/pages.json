@@ -4,11 +4,7 @@
     "navigationBarTitleText": "Secretsss",
     "navigationBarBackgroundColor": "#f8f8f8",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#FFFFFF",
-    "onShareAppMessage": {
-      "title": "Secretsss",
-      "path": "/pages/index/index"
-    }
+    "backgroundColor": "#FFFFFF"
   },
   "easycom": {
     "autoscan": true,
@@ -17,44 +13,33 @@
       "^(?!z-paging-refresh|z-paging-load-more)z-paging(.*)": "z-paging/components/z-paging$1/z-paging$1.vue"
     }
   },
-  "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#018d71",
-    "backgroundColor": "#F8F8F8",
-    "borderStyle": "black",
-    "height": "50px",
-    "fontSize": "10px",
-    "iconWidth": "24px",
-    "spacing": "3px",
-    "list": [
-      {
-        "iconPath": "static/tabbar/home.png",
-        "selectedIconPath": "static/tabbar/homeHL.png",
-        "pagePath": "pages/index/index",
-        "text": "Plan"
-      },
-      {
-        "iconPath": "static/tabbar/example.png",
-        "selectedIconPath": "static/tabbar/exampleHL.png",
-        "pagePath": "pages/about/index",
-        "text": "About"
-      }
-    ]
-  },
   "pages": [
     {
       "path": "pages/index/index",
       "type": "home",
       "style": {
-        "navigationBarTitleText": "Plan",
         "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/about/index",
+      "path": "pages/profile/index",
       "type": "page",
       "style": {
-        "navigationBarTitleText": "About"
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/task/edit",
+      "type": "page",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/task/index",
+      "type": "page",
+      "style": {
+        "navigationStyle": "custom"
       }
     }
   ],

@@ -1,36 +1,62 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { http } from '@/utils/http'
 
 const initState = {
+  openid: '',
   nickname: '',
   avatar: '',
-  alias: { wk: '王凯', wkx: '王可馨' } as const,
 }
 
 export const useUserStore = defineStore(
   'user',
   () => {
-    const userInfo = ref<IUserInfo>({ ...initState })
+    const userInfo = reactive<IUserInfo>({ ...initState })
 
-    const setUserInfo = (val: IUserInfo) => {
-      userInfo.value = val
+    const login = async () => {
+      const openid = await uni.getStorageSync('openid')
+      if (openid) {
+        userInfo.openid = openid
+        return
+      }
+      return uni.login({
+        provider: 'weixin',
+        success: async ({ code }) => {
+          const { data } = await http.post<LoginRes>('/login', { code })
+          uni.setStorageSync('openid', data.openid)
+          userInfo.openid = data.openid
+          getProfile()
+        },
+        fail: (err) => {
+          console.error('微信登录失败：', err)
+        },
+      })
     }
-
-    const clearUserInfo = () => {
-      userInfo.value = { ...initState }
+    const getProfile = async (): Promise<IUserInfo> => {
+      const { data } = await http.get<Profile>('/profile', { openid: userInfo.openid })
+      if (data === null) {
+        return Promise.resolve(null)
+      }
+      userInfo.avatar = data.avatar
+      userInfo.nickname = data.nickname
+      return userInfo
     }
-    // 一般没有reset需求，不需要的可以删除
-    const reset = () => {
-      userInfo.value = { ...initState }
+    const setProfile = async (info: Profile) => {
+      const { data } = await http.post<Profile>('/profile', {
+        openid: userInfo.openid,
+        nickname: info.nickname,
+        avatar: info.avatar,
+      })
+      userInfo.avatar = data.avatar
+      userInfo.nickname = data.nickname
     }
-    const isLogined = computed(() => !!userInfo.value.token)
 
     return {
-      userInfo,
-      setUserInfo,
-      clearUserInfo,
-      isLogined,
-      reset,
+      login,
+      getProfile,
+      setProfile,
+      isLogined() {
+        return false
+      },
     }
   },
   {

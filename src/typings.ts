@@ -15,12 +15,7 @@ type IUniUploadFileOptions = {
   formData?: any
 }
 
-type Alias = {
-  wk: '王凯'
-  wkx: '王可馨'
-}
 type IUserInfo = {
-  alias: Alias
   nickname?: string
   avatar?: string
   /** 微信的 openid，非微信没有这个字段 */
@@ -28,24 +23,37 @@ type IUserInfo = {
   token?: string
 }
 
-type Plan = Array<{
-  text: string
-  deadline: string
-  doneDate: string
-}>
-type Task = Array<{
-  title: string
-  list: Plan
-}>
-type IPlan = {
-  task: {
-    [key: number]: {
-      [key in keyof Alias]: Task
-    }
-  }
-}
-
 enum TestEnum {
   A = 'a',
   B = 'b',
+}
+
+interface LoginRes {
+  openid: string
+  session_key: string
+}
+
+interface TaskRes {
+  id: number
+  done: boolean
+  catalog: string
+  deadline: string
+  doneAttachMent: string
+  doneDate: string
+  doneDesc: string
+  lastUpdateDate: string
+  openid: string
+  registerDate: string
+  taskDesc: string
+  title: string
+  visible: 'public' | 'onlyMe'
+}
+interface Plan {
+  catalog: TaskRes['catalog']
+  list: Array<TaskRes>
+}
+
+interface Profile {
+  avatar: string
+  nickname: string
 }
