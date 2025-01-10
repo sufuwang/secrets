@@ -6,8 +6,8 @@
 }
 </route>
 <template>
-  <template v-if="pageTitle">
-    <Layout :title="pageTitle" childClass="" :showNavigateBack="true">
+  <template v-if="data.pageTitle">
+    <Layout :title="data.pageTitle" childClass="" :showNavigateBack="true">
       <wd-form ref="formRef" :model="model">
         <wd-cell-group border>
           <wd-select-picker
@@ -77,16 +77,27 @@
           />
         </wd-cell-group>
       </wd-form>
-      <view class="p-2">
+      <view class="p-2 flex flex-row gap-2">
+        <wd-button
+          v-if="data.taskId"
+          block
+          type="error"
+          custom-class="rounded-2! flex-auto"
+          :disabled="data.loading"
+          @click="onDelete"
+        >
+          <wd-loading v-if="data.loading" :size="20" />
+          <view v-else>删除</view>
+        </wd-button>
         <wd-button
           block
           type="primary"
-          custom-class="rounded-2!"
-          :disabled="model.loading"
+          custom-class="rounded-2! flex-auto"
+          :disabled="data.loading"
           @click="onSubmit"
         >
-          <wd-loading v-if="model.loading" :size="20" />
-          <view v-else>提交</view>
+          <wd-loading v-if="data.loading" :size="20" />
+          <view v-else>保存</view>
         </wd-button>
       </view>
     </Layout>
@@ -98,32 +109,60 @@ import Layout from '@/components/Layout.vue'
 import InputWithTips from '@/components/InputWithTips.vue'
 import { useTaskStore } from '@/store'
 
-const { editTask } = useTaskStore()
+const { editTask, getTask, updateTask, deleteTask } = useTaskStore()
 
 const formRef = ref(null)
-const pageTitle = ref('')
-const model = reactive({
+const data = reactive({
+  pageTitle: '',
+  taskId: '',
+  showCatalogTips: true,
+  loading: false,
+})
+
+const model = ref({
   catalog: '',
   title: '',
   taskDesc: '',
   deadline: Date.now(),
   visible: 'public',
-  showCatalogTips: true,
-  loading: false,
 })
 
 onBeforeMount(() => {
   const { options } = getCurrentPages().at(-1) as any
-  pageTitle.value = options.taskId ? '编辑任务' : '新增任务'
+  data.taskId = options.id
+  data.pageTitle = options.id ? '编辑任务' : '新增任务'
+  getTaskDetail()
 })
 
+const getTaskDetail = async () => {
+  if (!data.taskId) {
+    return
+  }
+  const task = await getTask({ id: data.taskId })
+  model.value = {
+    ...model.value,
+    ...task,
+    deadline: dayjs(task.deadline.split(' ').at(0)).unix() * 1000,
+  }
+}
+const onDelete = async () => {
+  const {
+    data: { affected },
+  } = await deleteTask<{ affected: number }>(data.taskId)
+  if (affected === 1) {
+    uni.navigateBack()
+  }
+}
 const onSubmit = async () => {
   try {
-    model.loading = true
+    data.loading = true
+
+    const body = { showCatalogTips: true, loading: false }
+
     await formRef.value.validate()
-    await editTask({
-      ...model,
-      deadline: dayjs(model.deadline).format('YYYY-MM-DD 23:59:59'),
+    await (data.taskId ? updateTask : editTask)({
+      ...model.value,
+      deadline: dayjs(model.value.deadline).format('YYYY-MM-DD 23:59:59'),
     })
     uni.showToast({
       icon: 'none',
@@ -131,7 +170,7 @@ const onSubmit = async () => {
     })
     uni.navigateBack()
   } finally {
-    model.loading = false
+    data.loading = false
   }
 }
 </script>

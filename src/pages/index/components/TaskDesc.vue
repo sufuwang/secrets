@@ -25,9 +25,9 @@ const importTextClass = 'mx-[2px] px-[4px] py-[2px] inline bg-[#f1f1f1] rounded-
 const current = ref<number>(0)
 const swiperList = ref([
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/capybara.jpg',
-  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_155516.mp4',
+  // 'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_155516.mp4',
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/meng.jpg',
-  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_115503.mp4',
+  // 'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_115503.mp4',
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/moon.jpg',
 ])
 </script>

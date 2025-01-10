@@ -18,15 +18,27 @@ export const useTaskStore = defineStore(
         list: task.filter((row) => row.catalog === catalog),
       }))
     }
-    const editTask = async (body) => {
-      http.post('/task', { openid: uni.getStorageSync('openid'), ...body })
-    }
-    const getTask = async (): Promise<Plan[]> => {
+    function getTask(): Promise<Plan[]>
+    function getTask(query: { id: string }): Promise<TaskRes>
+    async function getTask({ id } = { id: '' }) {
       const { data } = await http.get<Array<TaskRes>>('/task', {
         openid: uni.getStorageSync('openid'),
+        id,
       })
+      if (id) {
+        return data[0]
+      }
       store.task = handleTask(data)
       return store.task
+    }
+    const editTask = async (body) => {
+      return http.post('/task', { openid: uni.getStorageSync('openid'), ...body })
+    }
+    const updateTask = async (body) => {
+      return http.put('/task', { openid: uni.getStorageSync('openid'), ...body })
+    }
+    const deleteTask = async <T>(id: string) => {
+      return http.delete<T>('/task', {}, { openid: uni.getStorageSync('openid'), id })
     }
 
     return {
@@ -35,6 +47,8 @@ export const useTaskStore = defineStore(
       getCurPlan,
       editTask,
       getTask,
+      updateTask,
+      deleteTask,
     }
   },
   {

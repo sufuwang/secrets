@@ -15,7 +15,7 @@
         一般的，检举内容由承办的党的委员会或纪律检查委员会将处理意见或复议、复查结论同申诉人见面，听取其意见。复议、复查的结论和决定，应交给申诉人一份。
       </Card>
     </view>
-    <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @onClick="onClick" />
+    <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @click="onClick" />
   </Layout>
 </template>
 

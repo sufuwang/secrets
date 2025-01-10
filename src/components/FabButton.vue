@@ -10,7 +10,7 @@
     <template #trigger>
       <view
         class="w-[34px] h-[34px] shadow-[2px_2px_4px_rgba(0,0,0,.4)] bg-white rounded-br-[8px] flex justify-center items-center p-[4px]"
-        @click="$emit('onClick')"
+        @click="$emit('click')"
       >
         <wd-icon :name="props.icon" size="18px"></wd-icon>
       </view>
@@ -21,7 +21,7 @@
 const props = defineProps<{
   icon: string
 }>()
-const emits = defineEmits(['onClick', 'onPageScroll'])
+const emits = defineEmits(['click', 'onPageScroll'])
 
 const zIndex = ref(100)
 const id = ref()
