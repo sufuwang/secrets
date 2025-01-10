@@ -8,10 +8,17 @@
 <template>
   <template v-if="data.pageTitle">
     <Layout :title="data.pageTitle" childClass="" :showNavigateBack="true">
+      <wd-notice-bar
+        v-if="data.notices.length"
+        type="info"
+        direction="vertical"
+        prefix="sound"
+        :delay="3"
+        :text="data.notices"
+      />
       <wd-form ref="formRef" :model="model">
         <wd-cell-group border>
-          <wd-select-picker
-            type="radio"
+          <wd-picker
             label="可见模式"
             label-width="120px"
             v-model="model.visible"
@@ -32,6 +39,22 @@
             :rules="[{ required: true, message: '请选择可见模式' }]"
           />
           <wd-input
+            label="任务分类"
+            prop="catalog"
+            label-width="120px"
+            v-model="model.catalog"
+            placeholder="请输入或选择任务分类"
+            :rules="[{ required: true, message: '请填写或选择任务分类' }]"
+          >
+            <template #suffix>
+              <view class="relative">
+                <wd-picker :columns="data.catalogs" v-model="model.catalog" use-default-slot>
+                  <wd-icon name="arrow-right" size="16px" color="rgba(0, 0, 0, 0.26)" />
+                </wd-picker>
+              </view>
+            </template>
+          </wd-input>
+          <wd-input
             clearable
             prop="title"
             label="任务标题"
@@ -41,22 +64,6 @@
             placeholder="请输入任务标题"
             :rules="[{ required: true, message: '请填写任务标题' }]"
           />
-          <wd-input
-            clearable
-            label="任务分类"
-            prop="catalog"
-            label-width="120px"
-            clear-trigger="focus"
-            v-model="model.catalog"
-            placeholder="请输入任务分类"
-            :rules="[{ required: true, message: '请填写一级目录' }]"
-          />
-          <!-- <InputWithTips
-            label="任务分类"
-            prop="catalog"
-            placeholder="请输入任务分类"
-            :rules="[{ required: true, message: '请填写一级目录' }]"
-          /> -->
           <wd-calendar
             label="预计完成时间"
             label-width="120px"
@@ -74,6 +81,15 @@
             clear-trigger="focus"
             v-model="model.taskDesc"
             placeholder="请输入任务描述"
+          />
+          <wd-picker
+            label-width="120px"
+            :columns="[
+              { value: 'important', label: '重点关注' },
+              { value: 'common', label: '一般' },
+            ]"
+            label="任务优先级"
+            v-model="model.priority"
           />
         </wd-cell-group>
       </wd-form>
@@ -106,10 +122,9 @@
 <script setup lang="ts">
 import { dayjs } from 'wot-design-uni'
 import Layout from '@/components/Layout.vue'
-import InputWithTips from '@/components/InputWithTips.vue'
 import { useTaskStore } from '@/store'
 
-const { editTask, getTask, updateTask, deleteTask } = useTaskStore()
+const { editTask, getTask, getTaskCatalog, updateTask, deleteTask } = useTaskStore()
 
 const formRef = ref(null)
 const data = reactive({
@@ -117,21 +132,26 @@ const data = reactive({
   taskId: '',
   showCatalogTips: true,
   loading: false,
+  notices: [],
+  showCatalogList: false,
+  catalogs: [],
 })
 
-const model = ref({
+const model = ref<{ [key: string]: any }>({
   catalog: '',
   title: '',
   taskDesc: '',
   deadline: Date.now(),
   visible: 'public',
+  priority: 'common',
 })
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   const { options } = getCurrentPages().at(-1) as any
   data.taskId = options.id
   data.pageTitle = options.id ? '编辑任务' : '新增任务'
   getTaskDetail()
+  data.catalogs = (await getTaskCatalog()).data
 })
 
 const getTaskDetail = async () => {
@@ -144,6 +164,10 @@ const getTaskDetail = async () => {
     ...task,
     deadline: dayjs(task.deadline.split(' ').at(0)).unix() * 1000,
   }
+  data.notices.push(
+    `任务新建时间为 ${model.value.registerDate}`,
+    `上次更新时间为 ${model.value.lastUpdateDate}`,
+  )
 }
 const onDelete = async () => {
   const {
@@ -156,10 +180,10 @@ const onDelete = async () => {
 const onSubmit = async () => {
   try {
     data.loading = true
-
-    const body = { showCatalogTips: true, loading: false }
-
-    await formRef.value.validate()
+    const { valid } = await formRef.value.validate()
+    if (!valid) {
+      return
+    }
     await (data.taskId ? updateTask : editTask)({
       ...model.value,
       deadline: dayjs(model.value.deadline).format('YYYY-MM-DD 23:59:59'),

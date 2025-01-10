@@ -18,6 +18,7 @@ export const useTaskStore = defineStore(
         list: task.filter((row) => row.catalog === catalog),
       }))
     }
+
     function getTask(): Promise<Plan[]>
     function getTask(query: { id: string }): Promise<TaskRes>
     async function getTask({ id } = { id: '' }) {
@@ -30,6 +31,9 @@ export const useTaskStore = defineStore(
       }
       store.task = handleTask(data)
       return store.task
+    }
+    const getTaskCatalog = () => {
+      return http.get<Array<string>>('/task/catalog', { openid: uni.getStorageSync('openid') })
     }
     const editTask = async (body) => {
       return http.post('/task', { openid: uni.getStorageSync('openid'), ...body })
@@ -47,6 +51,7 @@ export const useTaskStore = defineStore(
       getCurPlan,
       editTask,
       getTask,
+      getTaskCatalog,
       updateTask,
       deleteTask,
     }

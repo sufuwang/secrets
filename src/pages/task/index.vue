@@ -11,10 +11,24 @@
       <wd-index-bar sticky>
         <view v-for="item in store.task" :key="item.catalog">
           <wd-index-anchor :index="item.catalog" />
-          <template v-for="(row, key) in item.list" :key="key">
-            <wd-cell :border="true" clickable :title="row.title" @click="onClickEditTask(row)">
-              <wd-tag :type="deadlineType(row.deadline)" mark>
-                <span class="whitespace-nowrap">{{ formatDeadline(row.deadline) }}</span>
+          <template v-for="(row, key) in sortList(item.list)" :key="key">
+            <wd-cell :border="true" clickable @click="onClickEditTask(row)">
+              <template #title>
+                <view
+                  :class="row.priority === 'important' ? 'color-red font-bold' : ''"
+                  class="flex flex-row"
+                >
+                  <wd-icon
+                    v-if="row.priority === 'important'"
+                    name="star-on"
+                    size="14px"
+                    custom-class="mr-[4px]"
+                  />
+                  {{ row.title }}
+                </view>
+              </template>
+              <wd-tag :type="deadlineType(row)" mark :plain="row.priority !== 'important'">
+                <span class="whitespace-nowrap">{{ formatDeadline(row) }}</span>
               </wd-tag>
             </wd-cell>
           </template>
@@ -38,19 +52,45 @@ onPageShow(() => {
   getTask()
 })
 
-const deadlineType = (deadline) => {
+const sortList = (list) => {
+  const l = list.sort((a, b) => dayjs(b.deadline).unix() - dayjs(a.deadline).unix())
+  const d = []
+  const i = []
+  l.forEach((row) => {
+    if (row.priority === 'important') {
+      i.unshift(row)
+    } else if (row.done) {
+      d.push(row)
+    } else {
+      d.unshift(row)
+    }
+  })
+  return [...i, ...d]
+}
+const deadlineType = (row) => {
+  const { deadline, done } = row
   const { mMonth: deadlineMonth, mDay: deadlineDay } = dayjs(deadline)
-  const curMonth = new Date().getMonth()
-  const curDay = new Date().getDate()
+  const { mMonth: curMonth, mDay: curDay } = dayjs(new Date())
   if (deadlineMonth === curMonth) {
-    return curDay > deadlineDay ? 'danger' : 'warning'
+    const day = deadlineDay - curDay
+    return day >= 0 ? (day > 5 ? 'warning' : 'danger') : done ? 'default' : 'danger'
   } else if (deadlineMonth > curMonth) {
     return 'primary'
   } else if (deadlineMonth < curMonth) {
-    return 'danger'
+    return 'default'
   }
 }
-const formatDeadline = (deadline) => {
+const formatDeadline = (row) => {
+  const { deadline, done } = row
+  if (done) {
+    return '已完成'
+  }
+  const day = Math.floor((dayjs(deadline).unix() - dayjs(new Date()).unix()) / (24 * 3600))
+  if (day >= 0 && day <= 5) {
+    return ['今天截止', '明天截止', '后天截止'][day] ?? `还有 ${day} 天`
+  } else if (day < 0) {
+    return '未完成'
+  }
   return deadline
     .split(' ')
     .at(0)
