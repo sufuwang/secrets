@@ -1,11 +1,19 @@
 import { CustomRequestOptions } from '@/interceptors/request'
+import { useUserStore } from '@/store'
 
-export const http = <T>(options: CustomRequestOptions) => {
+export const http = async <T>(options: CustomRequestOptions) => {
+  const { openid } = useUserStore()
+  const header = {
+    openid: await openid,
+  }
   // 1. 返回 Promise 对象
   return new Promise<IResData<T>>((resolve, reject) => {
     uni.request({
       ...options,
-      url: options.url.startsWith('http') ? options.url : `${__BASEURL__}/secrets${options.url}`,
+      header,
+      url: options.url.startsWith('http')
+        ? options.url
+        : `${__BASEURL__}${options.disableWithPathPrefix ? '' : '/secrets'}${options.url}`,
       dataType: 'json',
       // #ifndef MP-WEIXIN
       responseType: 'json',
@@ -49,11 +57,16 @@ export const http = <T>(options: CustomRequestOptions) => {
  * @param query 请求query参数
  * @returns
  */
-export const httpGet = <T>(url: string, query?: Record<string, any>) => {
+export const httpGet = <T>(
+  url: string,
+  query?: Record<string, any>,
+  argus?: Partial<CustomRequestOptions>,
+) => {
   return http<T>({
     url,
     query,
     method: 'GET',
+    ...argus,
   })
 }
 
@@ -68,12 +81,14 @@ export const httpPost = <T>(
   url: string,
   data?: Record<string, any>,
   query?: Record<string, any>,
+  argus?: Partial<CustomRequestOptions>,
 ) => {
   return http<T>({
     url,
     query,
     data,
     method: 'POST',
+    ...argus,
   })
 }
 
@@ -81,12 +96,14 @@ export const httpPut = <T>(
   url: string,
   data?: Record<string, any>,
   query?: Record<string, any>,
+  argus?: Partial<CustomRequestOptions>,
 ) => {
   return http<T>({
     url,
     query,
     data,
     method: 'PUT',
+    ...argus,
   })
 }
 
@@ -94,12 +111,14 @@ export const httpDelete = <T>(
   url: string,
   data?: Record<string, any>,
   query?: Record<string, any>,
+  argus?: Partial<CustomRequestOptions>,
 ) => {
   return http<T>({
     url,
     query,
     data,
     method: 'DELETE',
+    ...argus,
   })
 }
 

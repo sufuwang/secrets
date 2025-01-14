@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { http } from '@/utils/http'
 
 const initState = {
-  openid: '',
+  openid: null,
   nickname: '',
   avatar: '',
 }
@@ -11,6 +11,7 @@ export const useUserStore = defineStore(
   'user',
   () => {
     const userInfo = reactive<IUserInfo>({ ...initState })
+    const openid = computed(async () => userInfo.openid ?? uni.getStorageSync('openid'))
 
     const login = async () => {
       const openid = await uni.getStorageSync('openid')
@@ -32,7 +33,7 @@ export const useUserStore = defineStore(
       })
     }
     const getProfile = async (): Promise<IUserInfo> => {
-      const { data } = await http.get<Profile>('/profile', { openid: userInfo.openid })
+      const { data } = await http.get<Profile>('/profile')
       if (data === null) {
         return Promise.resolve(null)
       }
@@ -42,7 +43,6 @@ export const useUserStore = defineStore(
     }
     const setProfile = async (info: Profile) => {
       const { data } = await http.post<Profile>('/profile', {
-        openid: userInfo.openid,
         nickname: info.nickname,
         avatar: info.avatar,
       })
@@ -51,6 +51,7 @@ export const useUserStore = defineStore(
     }
 
     return {
+      openid,
       login,
       getProfile,
       setProfile,
