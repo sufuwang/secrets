@@ -6,13 +6,13 @@
 }
 </route>
 <template>
-  <Layout :show-navigate-back="true" title="我的任务">
+  <Layout title="我的任务">
     <template v-if="store.task.length">
       <wd-index-bar sticky>
         <view v-for="item in store.task" :key="item.catalog">
           <wd-index-anchor :index="item.catalog" />
           <template v-for="(row, key) in sortList(item.list)" :key="key">
-            <wd-cell :border="true" clickable @click="onEditTask(row)">
+            <wd-cell :border="true" clickable @click="onClickTask(row)">
               <template #icon>
                 <wd-checkbox
                   custom-label-class="h-full leading-none"
@@ -30,7 +30,11 @@
                   {{ row.title }}
                 </view>
               </template>
-              <wd-tag :type="deadlineType(row)" mark :plain="row.priority !== 'important'">
+              <wd-tag
+                :type="deadlineType(row)"
+                mark
+                :plain="!row.done && row.priority !== 'important'"
+              >
                 <span class="whitespace-nowrap">{{ formatDeadline(row) }}</span>
               </wd-tag>
             </wd-cell>
@@ -110,7 +114,13 @@ const onCreateTask = () => {
     url: '/pages/task/edit',
   })
 }
-const onEditTask = (row) => {
+const onClickTask = (row) => {
+  if (row.done) {
+    uni.navigateTo({
+      url: `/pages/task/detail?id=${row.id}`,
+    })
+    return
+  }
   uni.navigateTo({
     url: `/pages/task/edit?id=${row.id}`,
   })

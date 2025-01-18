@@ -6,7 +6,7 @@
 }
 </route>
 <template>
-  <Layout title="个人资料" childClass="px-0! h-fit" :showNavigateBack="true">
+  <Layout title="个人资料" childClass="px-0! h-fit" disableNavigateBack>
     <wd-form ref="form" :model="model">
       <wd-cell-group :border="true">
         <button
@@ -23,7 +23,7 @@
           clearable
           v-model="model.nickname"
           placeholder="请填写昵称"
-          type="nickname"
+          :type="'nickname' as any"
           :rules="[{ required: true, message: '请填写昵称' }]"
         />
         <view class="p-2">

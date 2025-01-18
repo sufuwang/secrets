@@ -7,7 +7,7 @@
 }
 </route>
 <template>
-  <Layout>
+  <Layout disableNavigateBack>
     <view class="flex flex-col justify-between pt-2 px-2">
       <Card><TaskDesc type="create" /></Card>
       <Card><TaskDesc type="done" /></Card>
