@@ -12,18 +12,21 @@
         <view v-for="item in store.task" :key="item.catalog">
           <wd-index-anchor :index="item.catalog" />
           <template v-for="(row, key) in sortList(item.list)" :key="key">
-            <wd-cell :border="true" clickable @click="onClickEditTask(row)">
+            <wd-cell :border="true" clickable @click="onEditTask(row)">
+              <template #icon>
+                <wd-checkbox
+                  custom-label-class="h-full leading-none"
+                  :disabled="row.done"
+                  :modelValue="row.done"
+                  shape="square"
+                  @change.stop="onCompleteTask(row)"
+                />
+              </template>
               <template #title>
                 <view
                   :class="row.priority === 'important' ? 'color-red font-bold' : ''"
-                  class="flex flex-row"
+                  class="flex flex-row items-center gap-2"
                 >
-                  <wd-icon
-                    v-if="row.priority === 'important'"
-                    name="star-on"
-                    size="14px"
-                    custom-class="mr-[4px]"
-                  />
                   {{ row.title }}
                 </view>
               </template>
@@ -36,7 +39,7 @@
       </wd-index-bar>
     </template>
     <wd-status-tip v-else image="content" tip="暂无内容" />
-    <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @click="onClickCreateTask" />
+    <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @click="onCreateTask" />
   </Layout>
 </template>
 <script setup lang="ts">
@@ -68,6 +71,9 @@ const sortList = (list) => {
   return [...i, ...d]
 }
 const deadlineType = (row) => {
+  if (row.done) {
+    return 'default'
+  }
   const { deadline, done } = row
   const { mMonth: deadlineMonth, mDay: deadlineDay } = dayjs(deadline)
   const { mMonth: curMonth, mDay: curDay } = dayjs(new Date())
@@ -99,14 +105,19 @@ const formatDeadline = (row) => {
     .map((row) => parseInt(row))
     .join('-')
 }
-const onClickCreateTask = () => {
+const onCreateTask = () => {
   uni.navigateTo({
     url: '/pages/task/edit',
   })
 }
-const onClickEditTask = (row) => {
+const onEditTask = (row) => {
   uni.navigateTo({
     url: `/pages/task/edit?id=${row.id}`,
+  })
+}
+const onCompleteTask = (row) => {
+  uni.navigateTo({
+    url: `/pages/task/edit?id=${row.id}&status=toComplete`,
   })
 }
 </script>

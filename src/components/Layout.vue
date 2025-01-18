@@ -1,5 +1,5 @@
 <template>
-  <view class="flex flex-col">
+  <view v-if="topHeight" class="flex flex-col">
     <view
       class="position w-full h-[fit-content] font-500 fixed bg-white/40 backdrop-blur-md flex flex-row justify-center items-end pb-[10px] z-[100]"
       :style="{

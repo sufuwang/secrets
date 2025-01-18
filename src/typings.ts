@@ -39,7 +39,6 @@ interface TaskRes {
   catalog: string
   deadline: string
   doneAttachMent: string
-  doneDate: string
   doneDesc: string
   lastUpdateDate: string
   openid: string

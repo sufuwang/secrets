@@ -20,12 +20,9 @@ export const useTaskStore = defineStore(
     }
 
     function getTask(): Promise<Plan[]>
-    function getTask(query: { id: string }): Promise<TaskRes>
+    function getTask(query: { id?: string }): Promise<TaskRes>
     async function getTask({ id } = { id: '' }) {
-      const { data } = await http.get<Array<TaskRes>>('/task', {
-        openid: uni.getStorageSync('openid'),
-        id,
-      })
+      const { data } = await http.get<Array<TaskRes>>('/task', id && { id })
       if (id) {
         return data[0]
       }
@@ -33,16 +30,24 @@ export const useTaskStore = defineStore(
       return store.task
     }
     const getTaskCatalog = () => {
-      return http.get<Array<string>>('/task/catalog', { openid: uni.getStorageSync('openid') })
+      return http.get<Array<string>>('/task/catalog')
     }
     const editTask = async (body) => {
-      return http.post('/task', { openid: uni.getStorageSync('openid'), ...body })
+      return http.post('/task', body)
     }
     const updateTask = async (body) => {
-      return http.put('/task', { openid: uni.getStorageSync('openid'), ...body })
+      return http.put('/task', body)
     }
     const deleteTask = async <T>(id: string) => {
-      return http.delete<T>('/task', {}, { openid: uni.getStorageSync('openid'), id })
+      return http.delete<T>('/task', {}, { id })
+    }
+    const getTaskFiles = async (id: string) => {
+      const { data } = await http.get<Array<any>>(
+        '/file',
+        { parentType: 'task', parentId: id },
+        { disableWithPathPrefix: true },
+      )
+      return data.map((row) => ({ ...row, url: __BASEURL__ + row.url }))
     }
 
     return {
@@ -54,6 +59,7 @@ export const useTaskStore = defineStore(
       getTaskCatalog,
       updateTask,
       deleteTask,
+      getTaskFiles,
     }
   },
   {
