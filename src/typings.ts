@@ -56,3 +56,8 @@ interface Profile {
   avatar: string
   nickname: string
 }
+
+interface TaskQuery {
+  id?: string
+  status?: 'toComplete'
+}

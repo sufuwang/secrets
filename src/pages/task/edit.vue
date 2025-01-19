@@ -7,7 +7,7 @@
 </route>
 <template>
   <template v-if="data.pageTitle">
-    <Layout :title="data.pageTitle" childClass="" :showNavigateBack="true">
+    <Layout :title="data.pageTitle">
       <wd-notice-bar
         v-if="data.notices.length"
         type="info"
@@ -18,124 +18,8 @@
       />
       <wd-form ref="formRef" :model="model">
         <wd-cell-group border>
-          <wd-picker
-            label="可见模式"
-            label-width="120px"
-            v-model="model.visible"
-            :disabled="isToComplete"
-            :columns="[
-              {
-                value: 'public',
-                label: '公开',
-              },
-              // {
-              //   value: 'fans',
-              //   label: '粉丝可见',
-              // },
-              {
-                value: 'onlyMe',
-                label: '仅自己可见',
-              },
-            ]"
-            :rules="[{ required: !isToComplete, message: '请选择可见模式' }]"
-          />
-          <wd-input
-            label="任务分类"
-            prop="catalog"
-            label-width="120px"
-            v-model="model.catalog"
-            :disabled="isToComplete"
-            :placeholder="`请输入${data.catalogs.length ? '或选择' : ''}任务分类`"
-            :rules="[
-              {
-                required: !isToComplete,
-                message: `请输入${data.catalogs.length ? '或选择' : ''}任务分类`,
-              },
-            ]"
-          >
-            <template v-if="data.catalogs.length && !isToComplete" #suffix>
-              <view class="relative">
-                <wd-picker :columns="data.catalogs" v-model="model.catalog" use-default-slot>
-                  <wd-icon name="arrow-right" size="16px" color="rgba(0, 0, 0, 0.26)" />
-                </wd-picker>
-              </view>
-            </template>
-          </wd-input>
-          <wd-input
-            clearable
-            prop="title"
-            label="任务标题"
-            label-width="120px"
-            clear-trigger="focus"
-            v-model="model.title"
-            placeholder="请输入任务标题"
-            :disabled="isToComplete"
-            :rules="[{ required: !isToComplete, message: '请填写任务标题' }]"
-          />
-          <wd-calendar
-            label="预计完成时间"
-            label-width="120px"
-            :min-date="Date.now()"
-            v-model="model.deadline"
-            :disabled="isToComplete"
-            :max-date="new Date(dayjs(`${dayjs().year()}-12-31`).date).getTime()"
-            :displayFormat="(value: number) => dayjs(value).format('YYYY 年 M 月 D 日')"
-            :rules="[{ required: !isToComplete, message: '请填写预计完成时间' }]"
-          />
-          <wd-input
-            v-if="isToComplete ? model.taskDesc : true"
-            clearable
-            label="任务描述"
-            prop="taskDesc"
-            label-width="120px"
-            clear-trigger="focus"
-            v-model="model.taskDesc"
-            :disabled="isToComplete"
-            placeholder="请输入任务描述"
-          />
-          <template v-if="isToComplete">
-            <wd-picker
-              label-width="120px"
-              :columns="[
-                { value: 'important', label: '重点关注' },
-                { value: 'common', label: '一般' },
-              ]"
-              label="任务优先级"
-              :disabled="isToComplete"
-              v-model="model.priority"
-            />
-            <wd-notice-bar v-if="isToComplete" type="info" :scrollable="false">
-              <view class="mr-[4px] inline">🎉 🎉 🎉</view>
-              恭喜完成一项任务，快记录你的任务成果吧
-            </wd-notice-bar>
-            <view class="flex flex-col p-3 pb-0!">
-              <wd-upload
-                multiple
-                :limit="data.filesLimit"
-                :header="{ openid: data.openid }"
-                :successStatus="200"
-                :file-list="data.files"
-                :form-data="data.formData"
-                name="files"
-                image-mode="aspectFill"
-                custom-evoke-class="mb-0!"
-                action="https://localhost:3000/file/upload"
-                @change="onChangeUpload"
-              />
-              <wd-textarea
-                v-model="model.doneDesc"
-                no-border
-                clearable
-                auto-height
-                :maxlength="120"
-                show-word-limit
-                :show-confirm-bar="false"
-                placeholder="请填写任务完成描述"
-                custom-class="m-0! p-0!"
-                custom-textarea-class="m-0! p-0! leading-none! placeholder:leading-none!"
-              />
-            </view>
-          </template>
+          <TaskBaseInfo v-model="model" v-model:data="data" :isToComplete="isToComplete" />
+          <TaskCompleteInfo v-if="isToComplete" v-model="model" v-model:data="data" />
         </wd-cell-group>
       </wd-form>
       <view class="p-2 flex flex-row gap-2">
@@ -169,11 +53,8 @@
 import { dayjs } from 'wot-design-uni'
 import Layout from '@/components/Layout.vue'
 import { useTaskStore, useUserStore } from '@/store'
-
-interface Options {
-  id?: string
-  status?: 'toComplete'
-}
+import TaskBaseInfo from './components/TaskBaseInfo.vue'
+import TaskCompleteInfo from './components/TaskCompleteInfo.vue'
 
 const { editTask, getTask, getTaskCatalog, updateTask, deleteTask, getTaskFiles } = useTaskStore()
 const { openid } = useUserStore()
@@ -204,24 +85,18 @@ const model = ref<{ [key: string]: any }>({
   priority: 'common',
 })
 
+export type Data = Partial<typeof data>
+export type Model = Partial<(typeof model)['value']>
+
 const isToComplete = computed(() => data.pageTitle === '完成任务')
 
 onBeforeMount(async () => {
-  const { options } = getCurrentPages<{ options: Options }>().at(-1)
+  const { options } = getCurrentPages<{ options: TaskQuery }>().at(-1)
   getTaskDetail(options)
   getPageTitle(options)
 })
 
-const onChangeUpload = ({ fileList }) => {
-  console.info('fileList: ', fileList)
-  model.value = {
-    ...model.value,
-    doneFileIds: fileList
-      .filter((row) => row.response)
-      .map((row) => JSON.parse(row.response).data[0].id),
-  }
-}
-const getPageTitle = ({ id, status }: Options) => {
+const getPageTitle = ({ id, status }: TaskQuery) => {
   if (status === 'toComplete') {
     data.pageTitle = '完成任务'
   } else if (id) {
@@ -230,7 +105,7 @@ const getPageTitle = ({ id, status }: Options) => {
     data.pageTitle = '新增任务'
   }
 }
-const getTaskDetail = async ({ id }: Options) => {
+const getTaskDetail = async ({ id }: TaskQuery) => {
   data.openid = await openid
   data.catalogs = (await getTaskCatalog()).data
   if (!id) {
@@ -260,11 +135,20 @@ const onDelete = async () => {
   }
 }
 const onSubmit = async () => {
-  if (isToComplete.value && model.value.doneFileIds.length > data.filesLimit) {
-    uni.showToast({
-      icon: 'none',
-      title: `最多支持上传 ${data.filesLimit} 张图片`,
-    })
+  if (isToComplete.value) {
+    if (model.value.doneFileIds.length === 0) {
+      uni.showToast({
+        icon: 'none',
+        title: '快上传一些照片来证明一下你的努力吧',
+      })
+      return
+    } else if (model.value.doneFileIds.length > data.filesLimit) {
+      uni.showToast({
+        icon: 'none',
+        title: `最多支持上传 ${data.filesLimit} 张图片`,
+      })
+      return
+    }
   }
   try {
     data.loading = true
