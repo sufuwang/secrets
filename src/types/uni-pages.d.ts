@@ -6,6 +6,7 @@
 interface NavigateToOptions {
   url: "/pages/index/index" |
        "/pages/profile/index" |
+       "/pages/task/detail" |
        "/pages/task/edit" |
        "/pages/task/index";
 }

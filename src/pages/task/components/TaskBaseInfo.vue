@@ -1,7 +1,7 @@
 <template>
   <wd-picker
     v-if="false"
-    label="可见模式"
+    :label="FormReflect.visible"
     label-width="120px"
     v-model="model.visible"
     :disabled="isToComplete"
@@ -22,7 +22,7 @@
     :rules="[{ required: !readOnly && !isToComplete, message: '请选择可见模式' }]"
   />
   <wd-input
-    label="任务分类"
+    :label="FormReflect.catalog"
     prop="catalog"
     label-width="120px"
     v-model="model.catalog"
@@ -47,7 +47,7 @@
   <wd-input
     clearable
     prop="title"
-    label="任务标题"
+    :label="FormReflect.title"
     label-width="120px"
     clear-trigger="focus"
     v-model="model.title"
@@ -57,7 +57,7 @@
     :rules="[{ required: !readOnly && !isToComplete, message: '请填写任务标题' }]"
   />
   <wd-calendar
-    label="预计完成时间"
+    :label="FormReflect.deadline"
     label-width="120px"
     :min-date="Date.now()"
     v-model="model.deadline"
@@ -70,8 +70,8 @@
   <wd-input
     v-if="isToComplete ? model.taskDesc : true"
     clearable
-    label="任务描述"
     prop="taskDesc"
+    :label="FormReflect.taskDesc"
     label-width="120px"
     clear-trigger="focus"
     v-model="model.taskDesc"
@@ -85,7 +85,7 @@
       { value: 'important', label: '重点关注' },
       { value: 'common', label: '一般' },
     ]"
-    label="任务优先级"
+    :label="FormReflect.priority"
     :disabled="isToComplete"
     :readonly="readOnly"
     v-model="model.priority"
@@ -94,6 +94,7 @@
 <script setup lang="ts">
 import { dayjs } from 'wot-design-uni'
 import type { Data, Model } from '../edit.vue'
+import { FormReflect } from '../config'
 
 defineProps<{ isToComplete?: boolean; readOnly?: boolean }>()
 const model = defineModel<Model>()
