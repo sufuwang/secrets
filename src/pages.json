@@ -15,8 +15,15 @@
   },
   "pages": [
     {
-      "path": "pages/index/index",
+      "path": "pages/home/index",
       "type": "home",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "type": "page",
       "style": {
         "navigationStyle": "custom"
       }

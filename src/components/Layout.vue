@@ -6,18 +6,21 @@
         height: `${topHeight}px`,
       }"
     >
-      <view v-if="!props.disableNavigateBack" class="absolute left-[12px]">
-        <wd-icon name="thin-arrow-left" size="16px" @click="onNavigateBack"></wd-icon>
-      </view>
-      <slot v-if="$slots.title" name="title" />
-      <view v-else>
-        {{ props.title || 'Secretsss' }}
-      </view>
+      <template v-if="!disableShowTitle">
+        <view v-if="!props.disableNavigateBack" class="absolute left-[12px]">
+          <wd-icon name="thin-arrow-left" size="16px" @click="onNavigateBack"></wd-icon>
+        </view>
+        <slot v-if="$slots.title" name="title" />
+        <view v-else>
+          {{ props.title || 'Secretsss' }}
+        </view>
+      </template>
     </view>
     <view
-      :class="`bg-[#f1f2f3] pb-2 grow full ${props.childClass}`"
+      :class="`grow bg-white ${props.childClass}`"
       :style="{
         marginTop: `${10 + topHeight}px`,
+        height: `calc(100vh - ${topHeight}px)`,
       }"
     >
       <slot />
@@ -27,6 +30,7 @@
 <script lang="ts" setup>
 interface Props {
   title?: string
+  disableShowTitle?: boolean
   disableNavigateBack?: boolean
   childClass?: string
 }
