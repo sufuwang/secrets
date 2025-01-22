@@ -6,7 +6,7 @@
 }
 </route>
 <template>
-  <Layout title="个人资料" childClass="px-0! h-fit" disableNavigateBack>
+  <Layout title="设置" childClass="px-0! h-fit">
     <wd-form ref="form" :model="model">
       <wd-cell-group :border="true">
         <button
@@ -18,13 +18,28 @@
         </button>
         <wd-input
           label="用户名"
-          label-width="60px"
+          label-width="120px"
           prop="nickname"
           clearable
           v-model="model.nickname"
           placeholder="请填写昵称"
-          :type="'nickname' as any"
+          type="nickname"
           :rules="[{ required: true, message: '请填写昵称' }]"
+        />
+        <wd-picker
+          label="主页偏好"
+          label-width="120px"
+          v-model="model.homeUrl"
+          :columns="[
+            {
+              value: '/pages/community/index',
+              label: '社区动态',
+            },
+            {
+              value: '/pages/task/index',
+              label: '我的任务',
+            },
+          ]"
         />
         <view class="p-2">
           <wd-button
@@ -46,13 +61,19 @@
 import Layout from '@/components/Layout.vue'
 import { useUserStore } from '@/store'
 
-const { setProfile } = useUserStore()
+const { userInfo, setProfile } = useUserStore()
 
 const model = reactive({
   avatar:
+    userInfo.avatar ??
     'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
-  nickname: '',
+  nickname: userInfo.nickname,
   disabled: true,
+  homeUrl: '/pages/community/index',
+})
+
+onBeforeMount(() => {
+  model.homeUrl = userInfo.homeUrl || model.homeUrl
 })
 
 watch(
@@ -60,7 +81,10 @@ watch(
   () => {
     model.disabled = model.avatar.length === 0 || model.nickname.length === 0
   },
-  { deep: true },
+  {
+    deep: true,
+    immediate: true,
+  },
 )
 
 const onChooseAvatar = ({ detail }) => {
@@ -68,10 +92,10 @@ const onChooseAvatar = ({ detail }) => {
 }
 
 const onSubmit = async () => {
-  await setProfile({ nickname: model.nickname, avatar: model.avatar })
+  await setProfile({ nickname: model.nickname, avatar: model.avatar, homeUrl: model.homeUrl })
   const { options } = getCurrentPages().at(-1) as any
   uni.redirectTo({
-    url: options?.to ?? '/pages/index/index',
+    url: options?.to ?? model.homeUrl,
   })
 }
 </script>

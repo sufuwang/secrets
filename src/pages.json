@@ -22,14 +22,14 @@
       }
     },
     {
-      "path": "pages/index/index",
+      "path": "pages/community/index",
       "type": "page",
       "style": {
         "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/profile/index",
+      "path": "pages/setting/index",
       "type": "page",
       "style": {
         "navigationStyle": "custom"

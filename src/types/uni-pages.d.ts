@@ -5,8 +5,8 @@
 
 interface NavigateToOptions {
   url: "/pages/home/index" |
-       "/pages/index/index" |
-       "/pages/profile/index" |
+       "/pages/community/index" |
+       "/pages/setting/index" |
        "/pages/task/detail" |
        "/pages/task/edit" |
        "/pages/task/index";
