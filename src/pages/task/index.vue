@@ -6,7 +6,7 @@
 }
 </route>
 <template>
-  <Layout title="我的任务">
+  <Layout title="我的任务" dynamicNavigateBack>
     <template v-if="store.task.length">
       <wd-index-bar sticky>
         <view v-for="item in store.task" :key="item.catalog">
@@ -43,7 +43,11 @@
       </wd-index-bar>
     </template>
     <wd-status-tip v-else image="content" tip="暂无内容" />
-    <FabButton icon="edit-outline" @onPageScroll="onPageScroll" @click="onCreateTask" />
+    <FabButton
+      showProfile
+      :data="[{ icon: 'edit-outline', click: onCreateTask }]"
+      @onPageScroll="onPageScroll"
+    />
   </Layout>
 </template>
 <script setup lang="ts">

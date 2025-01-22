@@ -1,37 +1,61 @@
 <template>
   <wd-fab
-    v-if="props.icon"
+    v-if="data.length"
     :draggable="true"
     :gap="{
       bottom: 100,
     }"
-    :zIndex="zIndex"
+    :customStyle="`display:${show ? 'block' : 'none'};`"
   >
     <template #trigger>
       <view
-        class="w-[34px] h-[34px] shadow-[2px_2px_4px_rgba(0,0,0,.4)] bg-white rounded-br-[8px] flex justify-center items-center p-[4px]"
-        @click="$emit('click')"
+        v-for="(row, index) in data"
+        :key="index"
+        :class="{
+          [className]: true,
+          'rounded-br-[8px]': !showProfile && index === data.length - 1,
+        }"
+        @click="row.click"
       >
-        <wd-icon :name="props.icon" size="18px"></wd-icon>
+        <wd-icon :name="row.icon" size="18px"></wd-icon>
+      </view>
+      <view
+        v-if="showProfile"
+        :class="{ [className]: true, 'rounded-br-[8px]': data.length }"
+        @click="jumpProfile"
+      >
+        <wd-icon name="user" size="18px"></wd-icon>
       </view>
     </template>
   </wd-fab>
 </template>
 <script setup lang="ts">
-const props = defineProps<{
-  icon: string
-}>()
+interface Props {
+  showProfile?: boolean
+  data: Array<{ icon: string; click: () => void }>
+}
+
+const className =
+  'w-[34px] h-[34px] shadow-[2px_2px_4px_rgba(0,0,0,.4)] bg-white flex justify-center items-center p-[4px]'
+
+const props = defineProps<Props>()
 const emits = defineEmits(['click', 'onPageScroll'])
 
-const zIndex = ref(100)
 const id = ref()
+const show = ref(true)
 
 emits('onPageScroll', () => {
   clearTimeout(id.value)
-  zIndex.value = -1
+  show.value = false
   id.value = setTimeout(() => {
-    zIndex.value = 100
+    show.value = true
     clearTimeout(id.value)
   }, 200)
 })
+
+const jumpProfile = () => {
+  uni.navigateTo({
+    url: '/pages/setting/index',
+  })
+}
 </script>
