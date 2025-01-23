@@ -1,13 +1,13 @@
 <template>
   <view v-if="topHeight" class="flex flex-col">
     <view
-      class="position w-full h-[fit-content] font-500 fixed bg-white/34 backdrop-blur-md flex flex-row justify-center items-end pb-[10px] z-[100]"
+      class="w-full h-[fit-content] font-500 fixed bg-white/38 backdrop-blur-md flex flex-row justify-center items-end pb-[10px] z-[100]"
       :style="{
         height: `${topHeight}px`,
       }"
     >
       <template v-if="!disableShowTitle">
-        <view v-if="!props.disableNavigateBack" class="absolute left-[12px]">
+        <view v-if="showNavigateBack" class="absolute left-[12px]">
           <wd-icon name="thin-arrow-left" size="16px" @click="onNavigateBack"></wd-icon>
         </view>
         <slot v-if="$slots.title" name="title" />
@@ -17,10 +17,10 @@
       </template>
     </view>
     <view
-      :class="`grow bg-white ${props.childClass}`"
+      :class="`grow h-fit ${props.childClass}`"
       :style="{
         marginTop: `${10 + topHeight}px`,
-        height: `calc(100vh - ${topHeight}px)`,
+        minHeight: `calc(100vh - ${topHeight}px)`,
       }"
     >
       <slot />
@@ -28,19 +28,34 @@
   </view>
 </template>
 <script lang="ts" setup>
+import { useUserStore } from '@/store'
+
 interface Props {
   title?: string
   disableShowTitle?: boolean
   disableNavigateBack?: boolean
+  dynamicNavigateBack?: boolean
   childClass?: string
 }
 
 const props = defineProps<Props>()
+const { userInfo } = useUserStore()
+
 const height = reactive({
   system: 0,
   menuButton: 0,
 })
 const topHeight = computed(() => height.system + height.menuButton)
+const showNavigateBack = computed(() => {
+  if (props.disableNavigateBack) {
+    return false
+  }
+  if (props.dynamicNavigateBack) {
+    const { route } = getCurrentPages().at(-1)
+    return userInfo.homeUrl !== `/${route}`
+  }
+  return true
+})
 
 onMounted(() => {
   const systemInfo = uni.getWindowInfo()
@@ -52,7 +67,7 @@ onMounted(() => {
 const onNavigateBack = () => {
   uni.navigateBack().catch(() => {
     uni.redirectTo({
-      url: '/pages/index/index',
+      url: '/pages/community/index',
     })
   })
 }

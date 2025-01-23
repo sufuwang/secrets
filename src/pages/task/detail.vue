@@ -39,7 +39,7 @@ onBeforeMount(async () => {
   model.value = Object.entries({ ...taskInfo, taskDesc: taskInfo.taskDesc || '-' })
     .map((row) => ({
       key: FormReflect[row[0]],
-      value: row[1] ?? '-',
+      value: row[1] || '-',
     }))
     .filter((row) => row.key)
   files.value = filesInfo.map((row) => row.url)
