@@ -5,6 +5,7 @@ const initState = {
   openid: null,
   nickname: '',
   avatar: '',
+  homeUrl: '',
 }
 
 export const useUserStore = defineStore(
@@ -19,17 +20,21 @@ export const useUserStore = defineStore(
         userInfo.openid = openid
         return
       }
-      return uni.login({
-        provider: 'weixin',
-        success: async ({ code }) => {
-          const { data } = await http.post<LoginRes>('/login', { code })
-          uni.setStorageSync('openid', data.openid)
-          userInfo.openid = data.openid
-          getProfile()
-        },
-        fail: (err) => {
-          console.error('微信登录失败：', err)
-        },
+      return new Promise((resolve, reject) => {
+        return uni.login({
+          provider: 'weixin',
+          success: async ({ code }) => {
+            const { data } = await http.post<LoginRes>('/login', { code })
+            uni.setStorageSync('openid', data.openid)
+            userInfo.openid = data.openid
+            await getProfile()
+            resolve(null)
+          },
+          fail: (err) => {
+            console.error('微信登录失败：', err)
+            reject(err)
+          },
+        })
       })
     }
     const getProfile = async (): Promise<IUserInfo> => {
@@ -39,19 +44,19 @@ export const useUserStore = defineStore(
       }
       userInfo.avatar = data.avatar
       userInfo.nickname = data.nickname
+      userInfo.homeUrl = data.homeUrl
       return userInfo
     }
     const setProfile = async (info: Profile) => {
-      const { data } = await http.post<Profile>('/profile', {
-        nickname: info.nickname,
-        avatar: info.avatar,
-      })
+      const { data } = await http.post<Profile>('/profile', info)
       userInfo.avatar = data.avatar
       userInfo.nickname = data.nickname
+      userInfo.homeUrl = data.homeUrl
     }
 
     return {
       openid,
+      userInfo,
       login,
       getProfile,
       setProfile,

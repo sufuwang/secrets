@@ -14,8 +14,16 @@
 </template>
 <script lang="ts" setup>
 import Layout from '@/components/Layout.vue'
+import { useUserStore } from '@/store'
 
-onMounted(() => {
-  uni.navigateTo({ url: '/pages/index/index' })
+const { login, userInfo } = useUserStore()
+
+onMounted(async () => {
+  await login()
+  if (userInfo.homeUrl) {
+    uni.redirectTo({ url: userInfo.homeUrl })
+  } else {
+    uni.redirectTo({ url: '/pages/community/index' })
+  }
 })
 </script>
