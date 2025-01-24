@@ -93,9 +93,8 @@ const onChooseAvatar = ({ detail }) => {
 
 const onSubmit = async () => {
   await setProfile({ nickname: model.nickname, avatar: model.avatar, homeUrl: model.homeUrl })
-  const { options } = getCurrentPages().at(-1) as any
-  uni.redirectTo({
-    url: options?.to ?? model.homeUrl,
+  uni.reLaunch({
+    url: '/pages/home/index',
   })
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <view v-if="topHeight" class="flex flex-col">
     <view
-      class="w-full h-[fit-content] font-500 fixed bg-white/38 backdrop-blur-md flex flex-row justify-center items-end pb-[10px] z-[100]"
+      :class="`w-full h-[fit-content] font-500 fixed bg-white/38 backdrop-blur-md flex flex-row justify-center items-end pb-[10px] z-[100] ${props.barClass}`"
       :style="{
         height: `${topHeight}px`,
       }"
@@ -35,6 +35,7 @@ interface Props {
   disableShowTitle?: boolean
   disableNavigateBack?: boolean
   dynamicNavigateBack?: boolean
+  barClass?: string
   childClass?: string
 }
 

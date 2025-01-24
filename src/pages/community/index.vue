@@ -16,7 +16,7 @@
     </view>
     <FabButton
       showProfile
-      :data="[{ icon: 'list', click: checkTask }]"
+      :data="[{ icon: 'list', click: onCheckTaskList }]"
       @onPageScroll="onPageScroll"
     />
   </Layout>
@@ -35,8 +35,8 @@ onShareAppMessage((res) => {
   }
 })
 
-const checkTask = async () => {
-  uni.redirectTo({
+const onCheckTaskList = async () => {
+  uni.navigateTo({
     url: '/pages/task/index',
   })
 }

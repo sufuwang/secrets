@@ -7,7 +7,7 @@
 </route>
 <template>
   <Layout disableShowTitle disableNavigateBack>
-    <view class="w-full h-full flex justify-center items-center">
+    <view class="flex justify-center items-center pt-24">
       <wd-loading custom-class="" />
     </view>
   </Layout>
