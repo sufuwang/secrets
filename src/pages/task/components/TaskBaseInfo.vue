@@ -5,20 +5,7 @@
     label-width="120px"
     v-model="model.visible"
     :disabled="isToComplete"
-    :columns="[
-      {
-        value: 'public',
-        label: '公开',
-      },
-      // {
-      //   value: 'fans',
-      //   label: '粉丝可见',
-      // },
-      {
-        value: 'onlyMe',
-        label: '仅自己可见',
-      },
-    ]"
+    :columns="VisibleOptions"
     :rules="[{ required: !readOnly && !isToComplete, message: '请选择可见模式' }]"
   />
   <wd-input
@@ -81,10 +68,7 @@
   />
   <wd-picker
     label-width="120px"
-    :columns="[
-      { value: 'important', label: '重点关注' },
-      { value: 'common', label: '一般' },
-    ]"
+    :columns="PriorityOptions"
     :label="FormReflect.priority"
     :disabled="isToComplete"
     :readonly="readOnly"
@@ -94,7 +78,7 @@
 <script setup lang="ts">
 import { dayjs } from 'wot-design-uni'
 import type { Data, Model } from '../edit.vue'
-import { FormReflect } from '../config'
+import { FormReflect, VisibleOptions, PriorityOptions } from '../config'
 
 defineProps<{ isToComplete?: boolean; readOnly?: boolean }>()
 const model = defineModel<Model>()
