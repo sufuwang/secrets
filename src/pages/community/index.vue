@@ -16,7 +16,7 @@
     </view>
     <FabButton
       showProfile
-      :data="[{ icon: 'list', click: onCheckTaskList }]"
+      :data="[{ disabled: showListIcon, icon: 'list', click: onCheckTaskList }]"
       @onPageScroll="onPageScroll"
     />
   </Layout>
@@ -27,12 +27,20 @@ import Layout from '@/components/Layout.vue'
 import FabButton from '@/components/FabButton.vue'
 import Card from './components/Card.vue'
 import TaskDesc from './components/TaskDesc.vue'
+import { useUserStore } from '@/store'
+
+const { userInfo } = useUserStore()
 
 onShareAppMessage((res) => {
   return {
     title: 'Secretsss',
     path: '/pages/community/index',
   }
+})
+
+const showListIcon = computed(() => {
+  const { route } = getCurrentPages().at(-1)
+  return userInfo.homeUrl !== `/${route}`
 })
 
 const onCheckTaskList = async () => {

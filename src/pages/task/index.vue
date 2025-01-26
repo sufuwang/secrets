@@ -45,7 +45,10 @@
     <wd-status-tip v-else image="content" tip="暂无内容" />
     <FabButton
       showProfile
-      :data="[{ icon: 'edit-outline', click: onCreateTask }]"
+      :data="[
+        { disabled: showHomeIcon, icon: 'home', size: '22px', click: onJumpCommunity },
+        { icon: 'edit-outline', click: onCreateTask },
+      ]"
       @onPageScroll="onPageScroll"
     />
   </Layout>
@@ -53,11 +56,17 @@
 <script setup lang="ts">
 import Layout from '@/components/Layout.vue'
 import FabButton from '@/components/FabButton.vue'
-import { useTaskStore } from '@/store'
+import { useTaskStore, useUserStore } from '@/store'
 import { onPageShow } from '@dcloudio/uni-app'
 import { dayjs } from 'wot-design-uni'
 
+const { userInfo } = useUserStore()
 const { store, getTask } = useTaskStore()
+
+const showHomeIcon = computed(() => {
+  const { route } = getCurrentPages().at(-1)
+  return userInfo.homeUrl !== `/${route}`
+})
 
 onPageShow(() => {
   getTask()
@@ -112,6 +121,11 @@ const formatDeadline = (row) => {
     .slice(1)
     .map((row) => parseInt(row))
     .join('-')
+}
+const onJumpCommunity = () => {
+  uni.navigateTo({
+    url: '/pages/community/index',
+  })
 }
 const onCreateTask = () => {
   uni.navigateTo({

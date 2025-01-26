@@ -1,6 +1,5 @@
 <template>
   <wd-fab
-    v-if="data.length"
     :draggable="true"
     :gap="{
       bottom: 100,
@@ -11,20 +10,17 @@
       <view
         v-for="(row, index) in data"
         :key="index"
-        :class="{
-          [className]: true,
-          'rounded-br-[8px]': !showProfile && index === data.length - 1,
-        }"
+        :class="{ [className]: true }"
         @click="row.click"
       >
-        <wd-icon :name="row.icon" size="18px"></wd-icon>
+        <wd-icon :name="row.icon" :size="row.size ?? '18px'" />
       </view>
       <view
         v-if="showProfile"
-        :class="{ [className]: true, 'rounded-br-[8px]': data.length }"
+        :class="{ [className]: true, 'rounded-br-[8px]': true }"
         @click="jumpProfile"
       >
-        <wd-icon name="user" size="18px"></wd-icon>
+        <wd-icon name="setting1" size="22px" custom-class="font-medium!" />
       </view>
     </template>
   </wd-fab>
@@ -32,7 +28,7 @@
 <script setup lang="ts">
 interface Props {
   showProfile?: boolean
-  data: Array<{ icon: string; click: () => void }>
+  data: Array<{ disabled?: boolean; icon: string; size?: string; click: () => void }>
 }
 
 const className =
@@ -43,6 +39,7 @@ const emits = defineEmits(['click', 'onPageScroll'])
 
 const id = ref()
 const show = ref(true)
+const data = computed(() => props.data.filter((row) => !row.disabled))
 
 emits('onPageScroll', () => {
   clearTimeout(id.value)
