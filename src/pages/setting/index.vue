@@ -14,7 +14,7 @@
           open-type="chooseAvatar"
           @chooseavatar="onChooseAvatar"
         >
-          <wd-img :width="100" :height="100" round :src="model.avatar" />
+          <wd-img :width="100" :height="100" round :src="model.avatar" custom-class="bg-gray" />
         </button>
         <wd-input
           label="用户名"
